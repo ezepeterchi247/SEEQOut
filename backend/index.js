@@ -1,7 +1,11 @@
+require("dotenv").config();
+const mongoose = require("mongoose");
 const express = require("express");
 
+const Market = require("./models/Market");
+
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.json({
@@ -12,33 +16,16 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/markets", (req, res) => {
-  res.json([
-    {
-      id: 1,
-      name: "Arena Market",
-      city: "Lagos",
-      state: "Lagos"
-    },
-    {
-      id: 2,
-      name: "Balogun Market",
-      city: "Lagos",
-      state: "Lagos"
-    },
-    {
-      id: 3,
-      name: "Computer Village",
-      city: "Lagos",
-      state: "Lagos"
-    },
-    {
-      id: 4,
-      name: "Trade Fair",
-      city: "Lagos",
-      state: "Lagos"
-    }
-  ]);
+app.get("/markets", async (req, res) => {
+  try {
+    const markets = await Market.find();
+    res.json(markets);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
 });
 app.get("/products", (req, res) => {
   res.json([
@@ -101,6 +88,47 @@ app.get("/search", (req, res) => {
 
   res.json(results);
 });
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("✅ Connected to MongoDB Atlas");
+app.get("/markets", async (req, res) => {
+  try {
+    const markets = await Market.find();
+    res.json(markets);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
 });
+app.get("/seed", async (req, res) => {
+  try {
+    await Market.deleteMany({});
+
+    await Market.create({
+      name: "Arena Market",
+      city: "Lagos",
+      state: "Lagos",
+      description: "Nigeria's largest footwear market"
+    });
+
+    res.json({
+      success: true,
+      message: "Market added successfully!"
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+});
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+  });
