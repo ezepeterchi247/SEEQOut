@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 
 const Market = require("./models/Market");
+const Product = require("./models/Product");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,27 +28,16 @@ app.get("/markets", async (req, res) => {
     });
   }
 });
-app.get("/products", (req, res) => {
-  res.json([
-    {
-      id: 1,
-      name: "Nike Air Max",
-      category: "Footwear",
-      market: "Arena Market",
-      shop: "A17",
-      price: "₦45,000",
-      seller: "John Shoes"
-    },
-    {
-      id: 2,
-      name: "Adidas Superstar",
-      category: "Footwear",
-      market: "Arena Market",
-      shop: "B12",
-      price: "₦38,000",
-      seller: "Kings Footwear"
-    }
-  ]);
+app.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 });
 app.get("/search", (req, res) => {
   const search = req.query.q?.toLowerCase() || "";
@@ -122,6 +112,32 @@ app.get("/seed", async (req, res) => {
     res.status(500).json({
       success: false,
       error: err.message
+    });
+  }
+});
+app.get("/seed-product", async (req, res) => {
+  try {
+    const product = new Product({
+      name: "Nike Air Max",
+      category: "Footwear",
+      market: "Arena Market",
+      shop: "A17",
+      seller: "John Shoes",
+      price: 45000,
+      image: "",
+      description: "Original Nike Air Max sneakers"
+    });
+
+    await product.save();
+
+    res.json({
+      success: true,
+      message: "Product added successfully!"
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.message
     });
   }
 });
