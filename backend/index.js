@@ -9,6 +9,7 @@ const Market = require("./models/Market");
 const Product = require("./models/Product");
 const Seller = require("./models/Seller");
 const User = require("./models/User");
+const auth = require("./middleware/auth");
 
 const app = express();
 
@@ -159,7 +160,7 @@ app.get("/products", async (req, res) => {
   }
 });
 
-app.post("/products", async (req, res) => {
+app.post("/products", auth, async (req, res) => {
   try {
     const product = new Product({
       name: req.body.name,
