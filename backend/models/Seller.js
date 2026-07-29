@@ -1,14 +1,24 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-  name: {
+const sellerSchema = new mongoose.Schema({
+  businessName: {
     type: String,
     required: true
   },
 
-  category: {
+  ownerName: {
     type: String,
     required: true
+  },
+
+  phone: {
+    type: String,
+    required: true
+  },
+
+  email: {
+    type: String,
+    default: ""
   },
 
   market: {
@@ -21,23 +31,7 @@ const productSchema = new mongoose.Schema({
     required: true
   },
 
-  seller: {
-    type: mongoose.Schema.Types.ObjectId,
-  ref: "Seller",
-    required: true
-  },
-
-  price: {
-    type: Number,
-    required: true
-  },
-
-  image: {
-    type: String,
-    default: ""
-  },
-
-  description: {
+  address: {
     type: String,
     default: ""
   },
@@ -48,4 +42,4 @@ const productSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model("Seller", sellerSchema);
