@@ -11,9 +11,15 @@ const Seller = require("./models/Seller");
 const User = require("./models/User");
 const auth = require("./middleware/auth");
 
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+
 const app = express();
 
 app.use(express.json());
+
+app.use("/", authRoutes);
+app.use("/", productRoutes);
 
 const PORT = process.env.PORT || 3000;
 
@@ -40,156 +46,6 @@ app.get("/markets", async (req, res) => {
     const markets = await Market.find();
 
     res.json(markets);
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
-});
-app.post("/register", async (req, res) => {
-  try {
-    const { fullName, email, phone, password, role } = req.body;
-
-    const existingUser = await User.findOne({
-      $or: [
-        { email },
-        { phone }
-      ]
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists."
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      fullName,
-      email,
-      phone,
-      password: hashedPassword,
-      role
-    });
-
-    await user.save();
-
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully!",
-      user
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email or password."
-      });
-    }
-
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!passwordMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email or password."
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role
-      },
-      "SEEQOUT_SECRET_KEY",
-      {
-        expiresIn: "7d"
-      }
-    );
-
-    res.json({
-      success: true,
-      message: "Login successful!",
-      token,
-      user
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
-});
-app.get("/products", async (req, res) => {
-  try {
-    const products = await Product.find()
-      .populate(
-        "seller",
-        "businessName ownerName phone market shop"
-      );
-
-    res.json(products);
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: err.message
-    });
-  }
-});
-
-app.post("/products", auth, async (req, res) => {
-  try {
-const seller = await Seller.findOne({
-  user: req.user.userId
-});
-
-if (!seller) {
-  return res.status(404).json({
-    success: false,
-    message: "Seller profile not found."
-  });
-}
-    const product = new Product({
-      name: req.body.name,
-      category: req.body.category,
-      market: req.body.market,
-      shop: req.body.shop,
-      seller: seller._id,
-      price: req.body.price,
-      image: req.body.image,
-      description: req.body.description
-    });
-
-    await product.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully!",
-      product
-    });
 
   } catch (err) {
     res.status(500).json({
