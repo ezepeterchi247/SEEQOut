@@ -167,7 +167,7 @@ app.post("/products", auth, async (req, res) => {
       category: req.body.category,
       market: req.body.market,
       shop: req.body.shop,
-      seller: req.body.seller,
+      seller: req.user.userId,
       price: req.body.price,
       image: req.body.image,
       description: req.body.description
@@ -179,6 +179,27 @@ app.post("/products", auth, async (req, res) => {
       success: true,
       message: "Product created successfully!",
       product
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+});
+app.get("/my-products", auth, async (req, res) => {
+  try {
+    const products = await Product.find({
+      seller: req.user.userId
+    }).populate(
+      "seller",
+      "businessName ownerName phone market shop"
+    );
+
+    res.json({
+      success: true,
+      products
     });
 
   } catch (err) {
@@ -252,7 +273,18 @@ app.get("/seed", async (req, res) => {
 
 app.get("/seed-seller", async (req, res) => {
   try {
+const user = await User.findOne({
+  email: "jane@example.com"
+});
+
+if (!user) {
+  return res.json({
+    success: false,
+    message: "User not found. Register Jane first."
+  });
+}
     const seller = new Seller({
+      user: user._id,
       businessName: "John Shoes",
       ownerName: "John Okafor",
       phone: "08012345678",
