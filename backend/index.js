@@ -162,12 +162,22 @@ app.get("/products", async (req, res) => {
 
 app.post("/products", auth, async (req, res) => {
   try {
+const seller = await Seller.findOne({
+  user: req.user.userId
+});
+
+if (!seller) {
+  return res.status(404).json({
+    success: false,
+    message: "Seller profile not found."
+  });
+}
     const product = new Product({
       name: req.body.name,
       category: req.body.category,
       market: req.body.market,
       shop: req.body.shop,
-      seller: req.user.userId,
+      seller: seller._id,
       price: req.body.price,
       image: req.body.image,
       description: req.body.description
@@ -190,8 +200,19 @@ app.post("/products", auth, async (req, res) => {
 });
 app.get("/my-products", auth, async (req, res) => {
   try {
+    const seller = await Seller.findOne({
+      user: req.user.userId
+    });
+
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller profile not found."
+      });
+    }
+
     const products = await Product.find({
-      seller: req.user.userId
+      seller: seller._id
     }).populate(
       "seller",
       "businessName ownerName phone market shop"
