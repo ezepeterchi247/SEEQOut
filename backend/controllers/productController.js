@@ -59,3 +59,60 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+exports.getMyProducts = async (req, res) => {
+  try {
+
+    const seller = await Seller.findOne({
+      user: req.user.userId
+    });
+
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller profile not found."
+      });
+    }
+
+    const products = await Product.find({
+      seller: seller._id
+    }).populate(
+      "seller",
+      "businessName ownerName phone market shop"
+    );
+
+    res.json({
+      success: true,
+      products
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
+exports.searchProducts = async (req, res) => {
+  try {
+
+    const search = req.query.q || "";
+
+    const products = await Product.find({
+      name: {
+        $regex: search,
+        $options: "i"
+      }
+    }).populate(
+      "seller",
+      "businessName ownerName phone market shop"
+    );
+
+    res.json(products);
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
