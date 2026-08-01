@@ -15,6 +15,7 @@ const auth = require("./middleware/auth");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/", authRoutes);
 app.use("/", productRoutes);
 app.use("/", favoriteRoutes);
+app.use("/", reviewRoutes);
 
 const PORT = process.env.PORT || 3000;
 
