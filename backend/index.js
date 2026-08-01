@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -13,13 +14,17 @@ const auth = require("./middleware/auth");
 
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
 
 const app = express();
 
 app.use(express.json());
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/", authRoutes);
 app.use("/", productRoutes);
+app.use("/", favoriteRoutes);
 
 const PORT = process.env.PORT || 3000;
 

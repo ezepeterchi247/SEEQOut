@@ -39,7 +39,7 @@ exports.createProduct = async (req, res) => {
       shop: req.body.shop,
       seller: seller._id,
       price: req.body.price,
-      image: req.body.image,
+      image: req.file ? `/uploads/${req.file.filename}` : "",
       description: req.body.description
     });
 
@@ -147,7 +147,9 @@ exports.updateProduct = async (req, res) => {
     product.market = req.body.market || product.market;
     product.shop = req.body.shop || product.shop;
     product.price = req.body.price || product.price;
-    product.image = req.body.image || product.image;
+    if (req.file) {
+  product.image = `/uploads/${req.file.filename}`;
+}
     product.description =
       req.body.description || product.description;
 
