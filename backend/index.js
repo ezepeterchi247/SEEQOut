@@ -16,6 +16,7 @@ const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const sellerRoutes = require("./routes/sellerRoutes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/", authRoutes);
 app.use("/", productRoutes);
 app.use("/", favoriteRoutes);
 app.use("/", reviewRoutes);
+app.use("/", sellerRoutes);
 
 const PORT = process.env.PORT || 3000;
 
