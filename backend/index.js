@@ -17,6 +17,9 @@ const productRoutes = require("./routes/productRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
+const recentlyViewedRoutes = require("./routes/recentlyViewedRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
@@ -29,6 +32,9 @@ app.use("/", productRoutes);
 app.use("/", favoriteRoutes);
 app.use("/", reviewRoutes);
 app.use("/", sellerRoutes);
+app.use("/", recentlyViewedRoutes);
+app.use("/", dashboardRoutes);
+app.use("/", orderRoutes);
 
 const PORT = process.env.PORT || 3000;
 

@@ -3,7 +3,22 @@ const Seller = require("../models/Seller");
 
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+
+    const filter = {};
+
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    if (req.query.brand) {
+      filter.brand = req.query.brand;
+    }
+
+    if (req.query.gender) {
+      filter.gender = req.query.gender;
+    }
+
+    const products = await Product.find(filter)
       .populate(
         "seller",
         "businessName ownerName phone market shop"
@@ -35,6 +50,8 @@ exports.createProduct = async (req, res) => {
     const product = new Product({
       name: req.body.name,
       category: req.body.category,
+      brand: req.body.brand,
+      gender: req.body.gender,
       market: req.body.market,
       shop: req.body.shop,
       seller: seller._id,
@@ -144,6 +161,8 @@ exports.updateProduct = async (req, res) => {
 
     product.name = req.body.name || product.name;
     product.category = req.body.category || product.category;
+    product.brand = req.body.brand || product.brand;
+    product.gender = req.body.gender || product.gender;
     product.market = req.body.market || product.market;
     product.shop = req.body.shop || product.shop;
     product.price = req.body.price || product.price;
