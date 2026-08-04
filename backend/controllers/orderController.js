@@ -124,6 +124,13 @@ exports.acceptOrder = async (req, res) => {
       });
     }
 
+if (order.status !== "Pending") {
+  return res.status(400).json({
+    success: false,
+    message: `Only pending orders can be accepted. Current status: ${order.status}`
+  });
+}
+
     order.status = "Accepted";
 
     await order.save();
@@ -172,6 +179,13 @@ exports.rejectOrder = async (req, res) => {
       });
     }
 
+if (order.status !== "Pending") {
+  return res.status(400).json({
+    success: false,
+    message: `Only pending orders can be rejected. Current status: ${order.status}`
+  });
+}
+
     order.status = "Rejected";
 
     await order.save();
@@ -219,6 +233,13 @@ exports.deliverOrder = async (req, res) => {
         message: "Order not found."
       });
     }
+
+if (order.status !== "Accepted") {
+  return res.status(400).json({
+    success: false,
+    message: `Only accepted orders can be delivered. Current status: ${order.status}`
+  });
+}
 
     order.status = "Delivered";
 

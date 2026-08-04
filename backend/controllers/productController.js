@@ -4,6 +4,13 @@ const Seller = require("../models/Seller");
 exports.getProducts = async (req, res) => {
   try {
 
+const page = parseInt(req.query.page) || 1;
+const limit = parseInt(req.query.limit) || 10;
+const skip = (page - 1) * limit;
+
+const totalProducts = await Product.countDocuments();
+const totalPages = Math.ceil(totalProducts / limit);
+
     const filter = {};
 
     if (req.query.category) {
@@ -18,13 +25,22 @@ exports.getProducts = async (req, res) => {
       filter.gender = req.query.gender;
     }
 
-    const products = await Product.find(filter)
+    const products = await Product.find()
+  .skip(skip)
+  .limit(limit)
       .populate(
         "seller",
         "businessName ownerName phone market shop"
       );
 
-    res.json(products);
+    res.json({
+  success: true,
+  page,
+  limit,
+  totalProducts,
+  totalPages,
+  products
+});
 
   } catch (err) {
     res.status(500).json({
