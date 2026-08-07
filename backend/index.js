@@ -20,6 +20,7 @@ const sellerRoutes = require("./routes/sellerRoutes");
 const recentlyViewedRoutes = require("./routes/recentlyViewedRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const imageSearchRoutes = require("./routes/imageSearchRoutes");
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/", sellerRoutes);
 app.use("/", recentlyViewedRoutes);
 app.use("/", dashboardRoutes);
 app.use("/", orderRoutes);
+app.use("/", imageSearchRoutes);
 
 const PORT = process.env.PORT || 3000;
 

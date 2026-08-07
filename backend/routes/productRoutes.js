@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("../middleware/auth");
-
+const sellerAuth = require("../middleware/sellerAuth");
 const upload = require("../middleware/upload");
 
 const {
   getProducts,
+  getProductById,
   createProduct,
   getMyProducts,
   searchProducts,
@@ -16,10 +17,12 @@ const {
 
 router.get("/products", getProducts);
 
+router.get("/products/:id", getProductById);
+
 router.post(
   "/products",
-  auth,
-  upload.single("image"),
+  sellerAuth,
+  upload.array("image", 4),
   createProduct
 );
 
@@ -34,6 +37,10 @@ router.put(
   updateProduct
 );
 
-router.delete("/products/:id", auth, deleteProduct);
+router.delete(
+  "/products/:id",
+  auth,
+  deleteProduct
+);
 
 module.exports = router;

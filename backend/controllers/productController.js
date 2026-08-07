@@ -52,6 +52,13 @@ const totalPages = Math.ceil(totalProducts / limit);
 exports.createProduct = async (req, res) => {
   try {
 
+   if (!req.files || req.files.length !== 4) {
+  return res.status(400).json({
+    success: false,
+    message: "Please upload exactly 4 product photos: front, side, back, and detail."
+  });
+}
+
     const seller = await Seller.findOne({
       user: req.user.userId
     });
@@ -72,8 +79,17 @@ exports.createProduct = async (req, res) => {
       shop: req.body.shop,
       seller: seller._id,
       price: req.body.price,
-      image: req.file ? `/uploads/${req.file.filename}` : "",
-      description: req.body.description
+      image: req.files && req.files.length > 0
+  ? `/uploads/${req.files[0].filename}`
+  : "",
+
+images: req.files
+  ? req.files.map(
+      (file) => `/uploads/${file.filename}`
+    )
+  : [],
+
+description: req.body.description
     });
 
     await product.save();
@@ -232,6 +248,33 @@ exports.deleteProduct = async (req, res) => {
     res.json({
       success: true,
       message: "Product deleted successfully!"
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
+
+exports.getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate(
+      "seller",
+      "businessName ownerName phone market shop"
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found."
+      });
+    }
+
+    res.json({
+      success: true,
+      product
     });
 
   } catch (err) {
