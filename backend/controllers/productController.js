@@ -8,8 +8,6 @@ const page = parseInt(req.query.page) || 1;
 const limit = parseInt(req.query.limit) || 10;
 const skip = (page - 1) * limit;
 
-const totalProducts = await Product.countDocuments();
-const totalPages = Math.ceil(totalProducts / limit);
 
     const filter = {};
 
@@ -25,7 +23,10 @@ const totalPages = Math.ceil(totalProducts / limit);
       filter.gender = req.query.gender;
     }
 
-    const products = await Product.find()
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const products = await Product.find(filter)
   .skip(skip)
   .limit(limit)
       .populate(
@@ -198,9 +199,18 @@ exports.updateProduct = async (req, res) => {
     product.market = req.body.market || product.market;
     product.shop = req.body.shop || product.shop;
     product.price = req.body.price || product.price;
-    if (req.file) {
-  product.image = `/uploads/${req.file.filename}`;
-}
+    if (req.files && req.files.length > 0) {
+      if (req.files.length !== 4) {
+        return res.status(400).json({
+          success: false,
+          message: "Please upload exactly 4 product photos: front, side, back, and detail."
+        });
+      }
+
+      product.images = req.files.map((file) => `/uploads/${file.filename}`);
+      product.image = product.images[0];
+      product.visualEmbeddings = [];
+    }
     product.description =
       req.body.description || product.description;
 

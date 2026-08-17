@@ -26,20 +26,24 @@ router.post(
   createProduct
 );
 
-router.get("/my-products", auth, getMyProducts);
+router.get(
+  "/my-products",
+  sellerAuth,
+  getMyProducts
+);
 
 router.get("/search", searchProducts);
 
 router.put(
   "/products/:id",
-  auth,
-  upload.single("image"),
+  sellerAuth,
+  upload.array("image", 4),
   updateProduct
 );
 
 router.delete(
   "/products/:id",
-  auth,
+  sellerAuth,
   deleteProduct
 );
 
