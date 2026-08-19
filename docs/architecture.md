@@ -7,22 +7,27 @@
 3. Admin Dashboard
 4. Backend API
 
-## Database
+## Actual Backend Stack
 
-PostgreSQL
+- Node.js
+- Express
+- MongoDB Atlas
+- Mongoose
+- JWT authentication
 
-## Backend Framework
+## Identity
 
-NestJS (Node.js)
+The User model supports buyer, seller, and admin roles.
+Seller accounts have a linked Seller profile.
 
-## Mobile Framework
+## Core Development Flow
 
-Flutter
-
-## Vision
-
-SEEQOut exists to remove the stress and uncertainty of shopping in physical markets.
+SCREEN → BUTTON → ROUTE → AUTH → ROLE → CONTROLLER → MODEL → DATABASE
 
 ## Core Principle
 
 Every screen should reduce stress and increase confidence.
+
+## Vision
+
+SEEQOut exists to remove the stress and uncertainty of shopping in physical markets.

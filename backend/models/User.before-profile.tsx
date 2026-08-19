@@ -29,10 +29,6 @@ const userSchema = new mongoose.Schema({
     default: "buyer"
   },
 
-  interests: {
-    type: [String],
-    default: []
-  },
   createdAt: {
     type: Date,
     default: Date.now

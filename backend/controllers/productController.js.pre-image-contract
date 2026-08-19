@@ -1,6 +1,5 @@
 const Product = require("../models/Product");
 const Seller = require("../models/Seller");
-const { generateProductEmbeddings } = require("../services/productEmbeddingService");
 
 exports.getProducts = async (req, res) => {
   try {
@@ -96,25 +95,9 @@ description: req.body.description
 
     await product.save();
 
-    try {
-      product.visualEmbeddings =
-        await generateProductEmbeddings(product.images);
-
-      await product.save();
-    } catch (embeddingError) {
-      console.error("Product embedding generation failed:", embeddingError);
-
-      return res.status(503).json({
-        success: false,
-        message: "Product was created but visual indexing failed. The product can be re-indexed later.",
-        productId: product._id,
-        indexingError: embeddingError.message
-      });
-    }
-
     res.status(201).json({
       success: true,
-      message: "Product created and visually indexed successfully!",
+      message: "Product created successfully!",
       product
     });
 
@@ -216,18 +199,9 @@ exports.updateProduct = async (req, res) => {
     product.market = req.body.market || product.market;
     product.shop = req.body.shop || product.shop;
     product.price = req.body.price || product.price;
-    if (req.files && req.files.length > 0) {
-      if (req.files.length !== 4) {
-        return res.status(400).json({
-          success: false,
-          message: "Please upload exactly 4 product photos: front, side, back, and detail."
-        });
-      }
-
-      product.images = req.files.map((file) => `/uploads/${file.filename}`);
-      product.image = product.images[0];
-      product.visualEmbeddings = [];
-    }
+    if (req.file) {
+  product.image = `/uploads/${req.file.filename}`;
+}
     product.description =
       req.body.description || product.description;
 

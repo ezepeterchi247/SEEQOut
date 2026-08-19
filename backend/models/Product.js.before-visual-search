@@ -53,11 +53,6 @@ const productSchema = new mongoose.Schema({
   default: []
 },
 
-  visualEmbeddings: {
-    type: [[Number]],
-    default: []
-  },
-
   description: {
     type: String,
     default: ""

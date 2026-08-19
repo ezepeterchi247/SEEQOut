@@ -14,6 +14,7 @@ const auth = require("./middleware/auth");
 
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
@@ -39,6 +40,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/", authRoutes);
 app.use("/", productRoutes);
 app.use("/", favoriteRoutes);
+app.use("/", profileRoutes);
 app.use("/", reviewRoutes);
 app.use("/", sellerRoutes);
 app.use("/", recentlyViewedRoutes);
@@ -194,6 +196,6 @@ app.get("/seed-product", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

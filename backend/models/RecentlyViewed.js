@@ -24,3 +24,5 @@ module.exports = mongoose.model(
   "RecentlyViewed",
   recentlyViewedSchema
 );
+
+recentlyViewedSchema.index({ user: 1, product: 1 }, { unique: true });
